@@ -1,0 +1,31 @@
+services:
+  nest-app:
+    build:
+      context: ./back-ouvidoria
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    # volumes:
+    #   - ./project/src:/usr/src/app/src
+    #   - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+    develop:
+      watch:
+          - action: sync
+            path: ./back-ouvidoria/src
+            target: /usr/src/app/src
+          - action: rebuild
+            path: ./back-ouvidoria/package.json
+  
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
