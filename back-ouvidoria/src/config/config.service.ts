@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { User } from 'src/users/user.entity';
 
 require('dotenv').config();
 
@@ -29,7 +30,7 @@ class ConfigService {
     return mode != 'DEV';
   }
 
-  public getTypeOrmConfig(): TypeOrmModuleOptions {
+  public getTypeOrmConfig(options: any): TypeOrmModuleOptions {
     return {
       type: 'postgres',
 
@@ -39,7 +40,9 @@ class ConfigService {
       password: this.getValue('POSTGRES_PASSWORD'),
       database: this.getValue('POSTGRES_DATABASE'),
 
-      entities: [],
+      entities: [User],
+
+      ...options
 
     //   migrationsTableName: 'migration',
 
