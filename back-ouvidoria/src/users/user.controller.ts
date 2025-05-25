@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
+import { UUID } from 'node:crypto';
 
 
 @Controller("user")
@@ -28,7 +29,7 @@ export class UserController {
     }
 
     @Get(":id")
-    async getUser(@Param("id") id: number, @Res() response: Response){
+    async getUser(@Param("id") id: UUID, @Res() response: Response){
         const user =  await this.userService.findOne(id);
         if (user.isErr()) {
             return response.status(HttpStatus.NOT_FOUND).json({ message: user.error.message });
@@ -37,7 +38,7 @@ export class UserController {
     }
 
     @Put(":id")
-    async updateUser(@Param("id") id: number, @Body() user: UpdateUserDto, @Res() response: Response) {
+    async updateUser(@Param("id") id: UUID, @Body() user: UpdateUserDto, @Res() response: Response) {
         const updatedUser = await this.userService.updateUser(id, user);
         if (updatedUser.isErr()) {
             return response.status(HttpStatus.BAD_REQUEST).json({ message: updatedUser.error.message });
@@ -46,7 +47,7 @@ export class UserController {
     }
 
     @Delete(":id")
-    async deleteUser(@Param("id") id: number, @Res() response: Response) {
+    async deleteUser(@Param("id") id: UUID, @Res() response: Response) {
         const result = await this.userService.remove(id);
         if (result.isErr()) {
             return response.status(HttpStatus.NOT_FOUND).json({ message: result.error.message });

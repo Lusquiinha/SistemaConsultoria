@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { err, ok, Result } from 'neverthrow';
 import { CreateUserDto } from './dto/create.user.dto';
+import { UUID } from 'node:crypto';
 
 @Injectable()
 export class UserService {
@@ -18,7 +19,7 @@ export class UserService {
             .catch((error) => err(new Error('Error finding users: ' + error.message)));
     }
 
-    findOne(id: number): Promise<Result<User, Error>> {
+    findOne(id: UUID): Promise<Result<User, Error>> {
         return this.usersRepository.findOneBy({ id })
             .then(user => {
                 if (!user) {
@@ -29,7 +30,7 @@ export class UserService {
             .catch(error => err(new Error('Error finding user: ' + error.message)));
     }
 
-    async remove(id: number): Promise<Result<void, Error>> {
+    async remove(id: UUID): Promise<Result<void, Error>> {
         const user = await this.findOne(id);
         if (user.isErr()) {
             return err(user.error);
@@ -56,7 +57,7 @@ export class UserService {
             .catch(error => err(new Error('Error finding user: ' + error.message)));
     }
 
-    async updateUser(id: number, user: Partial<User>): Promise<Result<User, Error>> {
+    async updateUser(id: UUID, user: Partial<User>): Promise<Result<User, Error>> {
         const existingUser = await this.findOne(id);
         if (existingUser.isErr()) {
             return err(existingUser.error);
