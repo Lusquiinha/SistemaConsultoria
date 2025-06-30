@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import { err, ok, Result } from 'neverthrow';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UUID } from 'node:crypto';
+import { UserResponseDto } from './dto/user.response.dto';
 
 @Injectable()
 export class UserService {
@@ -13,21 +14,21 @@ export class UserService {
         private usersRepository: Repository<User>,
     ) {}
 
-    findAll(): Promise<Result<User[], Error>> {
+    findAll(): Promise<Result<UserResponseDto[], Error>> {
         return this.usersRepository.find()
-            .then((users) => ok(users))
+            .then((users) => ok(users.map((user) => new UserResponseDto(user))))
             .catch((error) => err(new Error('Error finding users: ' + error.message)));
     }
 
-    findOne(id: UUID): Promise<Result<User, Error>> {
+    findOne(id: UUID): Promise<Result<UserResponseDto, Error>> {
         return this.usersRepository.findOneBy({ id })
-            .then(user => {
+            .then((user) => {
                 if (!user) {
                     return err(new Error('User not found'));
                 }
-                return ok(user);
+                return ok(new UserResponseDto(user));
             })
-            .catch(error => err(new Error('Error finding user: ' + error.message)));
+            .catch((error) => err(new Error('Error finding user: ' + error.message)));
     }
 
     async remove(id: UUID): Promise<Result<void, Error>> {
@@ -35,36 +36,58 @@ export class UserService {
         if (user.isErr()) {
             return err(user.error);
         }
-        await this.usersRepository.remove(user.value);
+        await this.usersRepository.remove(user.value as User);
         return ok();
     }
     
-    createUser(user: CreateUserDto): Promise<Result<User, Error>> {
-        const newUser = this.usersRepository.create(user)
+    createUser(user: CreateUserDto): Promise<Result<UserResponseDto, Error>> {
+        const newUser = this.usersRepository.create(user);
         return this.usersRepository.save(newUser)
-            .then((savedUser) => ok(savedUser))
-            .catch((error => err(new Error('Error saving user: ' + error.message ))));      
+            .then((savedUser) => ok(new UserResponseDto(savedUser)))
+            .catch((error) => err(new Error('Error saving user: ' + error.message)));
     }
 
-    findByEmail(email: string): Promise<Result<User, Error>> {
+    findByEmail(email: string): Promise<Result<UserResponseDto, Error>> {
         return this.usersRepository.findOneBy({ email })
-            .then(user => {
+            .then((user) => {
+                if (!user) {
+                    return err(new Error('User not found'));
+                }
+                return ok(new UserResponseDto(user));
+            })
+            .catch((error) => err(new Error('Error finding user: ' + error.message)));
+    }
+
+    findByEmailAuth(email: string): Promise<Result<User, Error>> {
+        return this.usersRepository.findOneBy({ email })
+            .then((user) => {
                 if (!user) {
                     return err(new Error('User not found'));
                 }
                 return ok(user);
             })
-            .catch(error => err(new Error('Error finding user: ' + error.message)));
+            .catch((error) => err(new Error('Error finding user: ' + error.message)));
     }
 
-    async updateUser(id: UUID, user: Partial<User>): Promise<Result<User, Error>> {
+    async updateUser(id: UUID, user: Partial<User>): Promise<Result<UserResponseDto, Error>> {
         const existingUser = await this.findOne(id);
         if (existingUser.isErr()) {
             return err(existingUser.error);
         }
-        Object.assign(existingUser.value, user);
-        return this.usersRepository.save(existingUser.value)
-            .then((savedUser) => ok(savedUser))
+        Object.assign(existingUser.value as User, user);
+        return this.usersRepository.save(existingUser.value as User)
+            .then((savedUser) => ok(new UserResponseDto(savedUser)))
             .catch((error) => err(new Error('Error updating user: ' + error.message)));
+    }
+
+    findByRefreshToken(refreshToken: string): Promise<Result<User, Error>> {
+        return this.usersRepository.findOneBy({ refreshToken })
+            .then((user) => {
+                if (!user) {
+                    return err(new Error('User not found'));
+                }
+                return ok(user);
+            })
+            .catch((error) => err(new Error('Error finding user by refresh token: ' + error.message)));
     }
 }

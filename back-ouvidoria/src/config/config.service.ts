@@ -31,7 +31,7 @@ class ConfigService {
     return mode != 'DEV';
   }
 
-  public getTypeOrmConfig(options: any): TypeOrmModuleOptions {
+  public getTypeOrmConfig(options: any = {}): TypeOrmModuleOptions {
     return {
       type: 'postgres',
 

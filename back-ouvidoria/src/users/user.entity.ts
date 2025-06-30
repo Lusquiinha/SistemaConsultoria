@@ -18,6 +18,9 @@ export class User {
   @Column({ type: 'enum', enum: ['CLIENT', 'CONSULTANT'] })
   role: 'CLIENT' | 'CONSULTANT';
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @CreateDateColumn()
   createdAt: Date;
 }
