@@ -4,7 +4,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --frozen-lockfile
 COPY . .
-RUN npm run build
+RUN --mount=type=secret,id=dotenv,required=true \
+    export $(grep -v '^#' /run/secrets/dotenv | xargs) && \
+    npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app

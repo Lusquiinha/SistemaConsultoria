@@ -12,7 +12,6 @@ export default function CadastroPage() {
     const [nome, setNome] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [senha, setSenha] = useState<string>('');
-    const [tipo, setTipo] = useState<UserType>(UserType.CLIENTE);
     const [error, setError] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
@@ -22,7 +21,7 @@ export default function CadastroPage() {
         setError('');
         setIsLoading(true);
         try {
-            await apiService.register(nome, email, senha, tipo);
+            await apiService.register(nome, email, senha);
             // Idealmente, mostrar uma notificação de sucesso aqui
             router.push('/login');
         } catch (err: any) {
@@ -51,13 +50,6 @@ export default function CadastroPage() {
                         <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} placeholder="Senha (mín. 6 caracteres)"
                             className="w-full p-4 pl-12 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" required />
                         <LockIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    </div>
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-300">Eu sou:</label>
-                        <select title='Tipo de Usuario' value={tipo} onChange={(e) => setTipo(e.target.value as UserType)} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                            <option value={UserType.CLIENTE}>Cliente</option>
-                            <option value={UserType.CONSULTOR}>Consultor</option>
-                        </select>
                     </div>
                     {error && <p className="text-red-400 text-center">{error}</p>}
                     <button type="submit" disabled={isLoading} className="w-full py-3 font-semibold text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition duration-300 flex items-center justify-center">

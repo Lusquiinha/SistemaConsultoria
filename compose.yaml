@@ -29,10 +29,10 @@ services:
     build:
       context: ./front-ouvidoria
       dockerfile: Dockerfile
+      secrets:
+        - dotenv
     ports:
       - "3001:3000"
-    depends_on:
-      - nest-app
     networks:
       - default
     env_file:
@@ -55,3 +55,7 @@ networks:
 
 volumes:
   postgres_data:
+
+secrets:
+  dotenv:
+    file: ./front.env

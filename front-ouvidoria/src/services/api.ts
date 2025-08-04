@@ -7,7 +7,7 @@ class ApiService {
 
     private onUnauthorized: (() => void) | null = null;
 
-    constructor(baseURL: string = `http://${process.env.API_HOST || 'localhost'}:${process.env.API_PORT || '3000'}`) {
+    constructor(baseURL: string = `http://${process.env.NEXT_PUBLIC_API_HOST || 'localhost'}:${process.env.NEXT_PUBLIC_API_PORT || '3000'}`) {
         this.baseURL = baseURL;
         this.token = null;
     }
@@ -56,10 +56,10 @@ class ApiService {
             body: JSON.stringify({ email, "password": senha }),
         });
     }
-    public register(nome: string, email: string, senha: string, tipo: UserType): Promise<User> {
+    public register(nome: string, email: string, senha: string): Promise<User> {
         return this._fetch<User>('/auth/register', {
             method: 'POST',
-            body: JSON.stringify({ "name": nome, "email": email, "password": senha, "role": tipo }),
+            body: JSON.stringify({ "name": nome, "email": email, "password": senha }),
         });
     }
 
