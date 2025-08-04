@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User, UserRole } from './user.entity';
 import { err, ok, Result } from 'neverthrow';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UUID } from 'node:crypto';
 import { UserResponseDto } from './dto/user.response.dto';
 
 @Injectable()
-export class UserService {
+export class UserService{
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
@@ -27,6 +27,17 @@ export class UserService {
                     return err(new Error('User not found'));
                 }
                 return ok(new UserResponseDto(user));
+            })
+            .catch((error) => err(new Error('Error finding user: ' + error.message)));
+    }
+
+    findEntity(id: UUID): Promise<Result<User, Error>> {
+        return this.usersRepository.findOneBy({ id })
+            .then((user) => {
+                if (!user) {
+                    return err(new Error('User not found'));
+                }
+                return ok(user);
             })
             .catch((error) => err(new Error('Error finding user: ' + error.message)));
     }

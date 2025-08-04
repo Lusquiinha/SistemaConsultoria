@@ -4,12 +4,16 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { UUID } from 'node:crypto';
+import { UserRole } from './user.entity';
+import { AllowRoles } from 'src/guards/decorator/role.decorator';
+import { AllowSelf } from 'src/guards/decorator/self.decorator';
 
 
 @Controller("user")
 export class UserController {
     constructor(private readonly userService: UserService ) {}
-
+    
+    @AllowRoles(UserRole.ADMIN)
     @Get()
     async getAll(@Res() response: Response) {
         const users = await this.userService.findAll();
@@ -19,6 +23,7 @@ export class UserController {
         response.status(HttpStatus.OK).json(users.value);
     }
 
+    @AllowRoles(UserRole.ADMIN)
     @Post()
     async createUser(@Body() user: CreateUserDto, @Res() response: Response) {
         const newUser =  await this.userService.createUser(user);
@@ -37,6 +42,7 @@ export class UserController {
         response.status(HttpStatus.OK).json(user.value);
     }
 
+    @AllowSelf()
     @Put(":id")
     async updateUser(@Param("id") id: UUID, @Body() user: UpdateUserDto, @Res() response: Response) {
         const updatedUser = await this.userService.updateUser(id, user);
@@ -46,6 +52,7 @@ export class UserController {
         response.status(HttpStatus.OK).json(updatedUser.value);
     }
 
+    @AllowSelf()
     @Delete(":id")
     async deleteUser(@Param("id") id: UUID, @Res() response: Response) {
         const result = await this.userService.remove(id);
@@ -55,6 +62,7 @@ export class UserController {
         response.status(HttpStatus.NO_CONTENT).send();
     }
 
+    
     @Get("email/:email")
     async getUserByEmail(@Param("email") email: string, @Res() response: Response){
         const user =  await this.userService.findByEmail(email);

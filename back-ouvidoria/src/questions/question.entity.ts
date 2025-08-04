@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from 'typeorm';
-import { User } from '../users/user.entity'; // Adjust the import path as necessary
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import { User } from '../users/user.entity';
+import { Answer } from '../answers/answer.entity';
 import { UUID } from 'node:crypto';
 
 
@@ -23,9 +24,20 @@ export class Question {
     @ManyToOne(() => User, { nullable: true })
     consultant: User | null;
 
-    @Column({ default: QuestionStatus.PENDING }) // PENDING, CLAIMED, ANSWERED
+    @OneToOne(() => Answer, (answer) => answer.question)
+    @JoinColumn()
+    answer: Answer;
+
+    @Column({ 
+        type: 'enum',
+        enum: QuestionStatus,
+        default: QuestionStatus.PENDING 
+    }) // PENDING, CLAIMED, ANSWERED
     status: QuestionStatus;
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @Column({ type: 'timestamp', nullable: true })
+    claimedAt: Date | null;
 }

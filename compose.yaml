@@ -5,9 +5,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    # volumes:
-    #   - ./project/src:/usr/src/app/src
-    #   - /usr/src/app/node_modules
     environment:
       - NODE_ENV=development
     depends_on:
@@ -27,15 +24,30 @@ services:
               - dist
           - action: rebuild
             path: ./back-ouvidoria/package.json
-  
+    env_file:
+      - ./back.env
+
+  front-app:
+    build:
+      context: ./front-ouvidoria
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - nest-app
+    networks:
+      - default
+    env_file:
+      - ./front.env
+
   postgres_db:
     image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres       # Garanta que esse usuário existe
-      POSTGRES_PASSWORD: senha123   # Senha definida
-      POSTGRES_DB: ouvidoria        # Banco de dados padrão
+    env_file:
+      - ./database.env
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

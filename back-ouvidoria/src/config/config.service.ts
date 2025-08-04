@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Answer } from 'src/answers/answer.entity';
 import { Question } from 'src/questions/question.entity';
 import { User } from 'src/users/user.entity';
 
@@ -15,6 +16,19 @@ class ConfigService {
     }
 
     return value!;
+  }
+
+  public getEnv(key: string, defaultValue?: string): string {
+    const value = this.env[key];
+    if (defaultValue){
+      return value ? value : defaultValue;
+    }
+    else{
+      if (!value) {
+        throw new Error(`config error - missing env: ${key}`);
+      }
+      return value;
+    }
   }
 
   public ensureValues(keys: string[]) {
@@ -41,7 +55,7 @@ class ConfigService {
       password: this.getValue('POSTGRES_PASSWORD'),
       database: this.getValue('POSTGRES_DATABASE'),
 
-      entities: [User, Question],
+      entities: [User, Question, Answer],
 
       ...options
 
@@ -65,7 +79,7 @@ const configService = new ConfigService(process.env)
     'POSTGRES_PORT',
     'POSTGRES_USER',
     'POSTGRES_PASSWORD',
-    'POSTGRES_DATABASE'
+    'POSTGRES_DATABASE',
   ]);
 
 export { configService };
