@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany, OneToOne, JoinColumn, BaseEntity } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Answer } from '../answers/answer.entity';
 import { UUID } from 'node:crypto';
@@ -11,7 +11,7 @@ export enum QuestionStatus {
 }
 
 @Entity('questions')
-export class Question {
+export class Question extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: UUID;
 

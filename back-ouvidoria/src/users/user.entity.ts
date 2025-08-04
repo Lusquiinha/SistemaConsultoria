@@ -1,5 +1,5 @@
 import { UUID } from 'node:crypto';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, BaseEntity } from 'typeorm';
 
 export enum UserRole {
   CLIENT = 'CLIENT',
@@ -8,7 +8,7 @@ export enum UserRole {
 }
 
 @Entity('users')
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: UUID;
 

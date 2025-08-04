@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToOne, BaseEntity } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Question } from '../questions/question.entity';
 import { UUID } from 'node:crypto';
 
 @Entity('answers')
-export class Answer {
+export class Answer extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: UUID;
 

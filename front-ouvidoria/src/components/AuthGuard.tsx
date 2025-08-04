@@ -11,7 +11,7 @@ interface AuthGuardProps {
 }
 
 export default function AuthGuard({ children }: AuthGuardProps) {
-    const { user, isLoading } = useAuth();
+    const { user, isLoading, logout } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
 
     useEffect(() => {
         apiService.setOnUnauthorized(() => {
-            router.replace('/login');
+            logout();
         });
     }, [router]);
 

@@ -10,7 +10,7 @@ WORKDIR /app
 ENV NODE_ENV=development
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.env ./
+# COPY --from=builder /app/.env ./
 RUN npm install --production --frozen-lockfile
 EXPOSE 3000
 CMD ["npm", "run", "start:prod"]

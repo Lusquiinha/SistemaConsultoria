@@ -13,7 +13,6 @@ import { AnswersModule } from './answers/answer.module';
 import { GuardModule } from './guards/guards.module';
 import { EmailModule } from './email/email.module';
 
-
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig({synchronize: true})),
