@@ -30,7 +30,7 @@ Para rodar a aplicação localmente, você precisará ter o **Docker** e o **Doc
 Primeiro, clone este repositório para a sua máquina local.
 
 ```bash
-git clone [https://github.com/Lusquiinha/SistemaConsultoria.git](https://github.com/Lusquiinha/SistemaConsultoria.git)
+git clone https://github.com/Lusquiinha/SistemaConsultoria.git
 cd SistemaConsultoria
 ```
 
@@ -88,4 +88,5 @@ Depois que os contêineres estiverem em execução, você poderá acessar:
 
 -   **Front-end (Aplicação do Cliente/Consultor):** `http://localhost:3001`
 -   **Back-end (API):** `http://localhost:3000`
+
 
